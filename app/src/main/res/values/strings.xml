@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Currency Converter</string>
+    <string name="from">FROM</string>
+    <string name="to">TO</string>
+    <string-array name="currency1">
+        <item>BYN</item>
+        <item>USD</item>
+        <item>EUR</item>
+        <item>RUB</item>
+        <item>UAH</item>
+        <item>PLN</item>
+    </string-array>
+    <string-array name="currency2">
+        <item>USD</item>
+        <item>BYN</item>
+        <item>EUR</item>
+        <item>RUB</item>
+        <item>UAH</item>
+        <item>PLN</item>
+    </string-array>
+</resources>
