@@ -21,6 +21,8 @@ class CurrencyConverterFragment : Fragment(R.layout.currency_converter_layout) {
     private val viewModel: CurrencyViewModel by sharedViewModel()
     private var baseCurrency = "BYN"
     private var convertedCurrency = "USD"
+    private var convertedAmount = -1.0
+    private var prevConvertedAmount = -1.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,13 +66,31 @@ class CurrencyConverterFragment : Fragment(R.layout.currency_converter_layout) {
         }
         binding.firstMoneyLine.doAfterTextChanged { firstLineText ->
             if (!firstLineText.isNullOrEmpty()) {
-                viewModel.getCurrencyConversation(
-                    baseCurrency,
-                    convertedCurrency,
-                    firstLineText.toString().toDouble()
-                )
+                if (convertedAmount != firstLineText.toString().toDouble()) {
+                    viewModel.getCurrencyConversation1(
+                        baseCurrency,
+                        convertedCurrency,
+                        firstLineText.toString().toDouble()
+                    )
+                    getCurrencyConversation1()
+                } else {
+                    convertedAmount = -1.0
+                }
             }
-            getCurrencyConversation()
+        }
+        binding.secondMoneyLine.doAfterTextChanged { secondLineText ->
+            if (!secondLineText.isNullOrEmpty()) {
+                if (convertedAmount != secondLineText.toString().toDouble()) {
+                    viewModel.getCurrencyConversation2(
+                        convertedCurrency,
+                        baseCurrency,
+                        secondLineText.toString().toDouble()
+                    )
+                    getCurrencyConversation2()
+                } else {
+                    convertedAmount = -1.0
+                }
+            }
         }
     }
 
@@ -94,12 +114,32 @@ class CurrencyConverterFragment : Fragment(R.layout.currency_converter_layout) {
         }
     }
 
-    private fun getCurrencyConversation() {
-        viewModel.conversation.observe(viewLifecycleOwner) { conversation ->
+    private fun getCurrencyConversation1() {
+        viewModel.conversation1.observe(viewLifecycleOwner) { conversation ->
             if (conversation.status == SUCCESS_STATUS) {
-                binding.secondMoneyLine.setText(
-                    conversation.rates?.values?.toList()?.get(0)?.rate_for_amount.toString()
-                )
+                convertedAmount =
+                    conversation.rates?.values?.toList()?.get(0)?.rate_for_amount ?: -1.0
+                if (prevConvertedAmount != convertedAmount) {
+                    prevConvertedAmount = convertedAmount
+                    binding.secondMoneyLine.setText(
+                        conversation.rates?.values?.toList()?.get(0)?.rate_for_amount.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getCurrencyConversation2() {
+        viewModel.conversation2.observe(viewLifecycleOwner) { conversation ->
+            if (conversation.status == SUCCESS_STATUS) {
+                convertedAmount =
+                    conversation.rates?.values?.toList()?.get(0)?.rate_for_amount ?: -1.0
+                if (prevConvertedAmount != convertedAmount) {
+                    prevConvertedAmount = convertedAmount
+                    binding.firstMoneyLine.setText(
+                        conversation.rates?.values?.toList()?.get(0)?.rate_for_amount.toString()
+                    )
+                }
             }
         }
     }

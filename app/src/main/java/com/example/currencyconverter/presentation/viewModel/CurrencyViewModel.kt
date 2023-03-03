@@ -10,12 +10,21 @@ import kotlinx.coroutines.launch
 
 class CurrencyViewModel(private val currencyInteractor: CurrencyInteractor) : ViewModel() {
 
-    val conversation: LiveData<CurrencyModel> get() = _conversation
-    private val _conversation = MutableLiveData<CurrencyModel>()
+    val conversation1: LiveData<CurrencyModel> get() = _conversation1
+    private val _conversation1 = MutableLiveData<CurrencyModel>()
 
-    fun getCurrencyConversation(from: String, to: String, amount: Double) {
+    val conversation2: LiveData<CurrencyModel> get() = _conversation2
+    private val _conversation2 = MutableLiveData<CurrencyModel>()
+
+    fun getCurrencyConversation1(from: String, to: String, amount: Double) {
         viewModelScope.launch {
-            _conversation.value = currencyInteractor.getCurrencyConversion(from, to, amount)
+            _conversation1.value = currencyInteractor.getCurrencyConversion(from, to, amount)
+        }
+    }
+
+    fun getCurrencyConversation2(from: String, to: String, amount: Double) {
+        viewModelScope.launch {
+            _conversation2.value = currencyInteractor.getCurrencyConversion(from, to, amount)
         }
     }
 }
